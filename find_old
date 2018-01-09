@@ -1,0 +1,33 @@
+#!/bin/bash
+
+
+for i in `find en/ *.md`; 
+do
+   fl=$(basename "$i")
+   pfl=`find pl/ -name $fl`
+
+   if [[ -f $i && "x-$pfl" == "x-" ]];
+   then
+     echo "file $i has no translation"
+   elif [[ -f $i ]]
+   then
+    pl_hash=`git log -n 1 --pretty=format:%H $pfl` 
+    en_hash=`git log -n 1 --pretty=format:%H $i` 
+
+    if [[ $en_hash != $pl_hash ]];
+    then 
+      dff=`git diff $pl_hash $en_hash $i`
+      echo "File $i last commit hash is different than hash of commit of $pfl"
+
+      if [[ "x-$dff" == "x-" ]];
+      then 
+         echo "But there are no difference in file (maybe just moving around)"
+      else
+         echo "Difference is: "
+         git diff $pl_hash $en_hash $i
+      fi
+
+    fi
+   fi
+done
+
