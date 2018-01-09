@@ -1,10 +1,17 @@
 #!/bin/bash
 
+if [[  "x-$1" == "x-" ]];
+then 
+   echo "please select language";
+   exit 1;
+fi
+
+lng=$1
 
 for i in `find en/ *.md`; 
 do
    fl=$(basename "$i")
-   pfl=`find pl/ -name $fl`
+   pfl=`find $lng/ -name $fl`
 
    if [[ -f $i && "x-$pfl" == "x-" ]];
    then
